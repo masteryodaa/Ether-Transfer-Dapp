@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Simple Ethereum Transfer Dapp</title>
+	<script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js@1.0.0-beta.34/dist/web3.min.js"></script>
+	<!-- <script src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js"></script> -->
+
+	<style>
+		body {
+			margin: 0;
+			padding: 0;
+			font-family: sans-serif;
+
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+		}
+
+		* {
+			margin: 15px;
+		}
+	</style>
+</head>
+
+<body>
+	<h2>wallet address : <h3 id="address"></h3>
+	</h2>
+	<h2>balance : <h3 id="balance"></h3>
+	</h2>
+	<button id="btn3" onclick="connect()">Connect your wallet</button>
+
+	<label for="money">Amount :
+		<input type="number" id="money" name="money" placeholder="enter atleast 0.01eth" />
+	</label>
+	<label for="input">to :
+		<input type="text" id="input" name='input' />
+	</label>
+	<button id="btn2" onclick="sendEth()">Send eth</button>
+
+	<h4 id='sent'></h4>
+
+	<script>
+
+		console.log('scripted loading');
+
+		let address = null;
+
+		const connect = async () => {
+			// Modern dapp browsers...
+			if (window.ethereum) {
+				window.web3 = new Web3(ethereum);
+				// const contract = new web3.eth.Contract(abi, contractAddress);
+
+				try {
+					// Request account access if needed
+					await ethereum.enable();
+					// Acccounts now exposed
+
+					// const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+					accounts = await web3.eth.getAccounts();
+					address = accounts[0];
+					console.log(address);
+					document.getElementById('address').innerHTML = address;
+
+					const balance = await web3.eth.getBalance(address);
+					document.getElementById('balance').innerHTML = web3.utils.fromWei(balance, 'ether') + " ETH";
+
+
+
+				} catch (error) {
+					console.log(error.message);
+				}
+			}
+			// Non-dapp browsers...
+			else {
+				console.log('Non-Ethereum browser detected. You should consider trying MetaMask!');
+			}
+		};
+
+		const sendEth = async () => {
+
+
+			let sentmsg = null;
+
+			const receiver = document.getElementById('input').value;
+			const amount = document.getElementById('money').value;
+			console.log(amount);
+
+			console.log('from : ' + address);
+			console.log('to : ' + receiver);
+
+			await web3.eth.sendTransaction({ from: address, to: receiver, value: web3.utils.toWei(amount, "ether"), gas: 3000000 },
+				(err, suc) => {
+					if (err) {
+						console.log(err);
+					}
+					else {
+						console.log('Transaction Hash : ' + suc);
+						sentmsg = 'Transferred Successfully!\n' + 'Transaction Hash : ' + suc;
+						document.getElementById('sent').innerText = "In progress...\n" + 'Transaction Hash : ' + suc;
+					}
+				})
+
+				.then(() => {
+					console.log('Transferred');
+					document.getElementById('sent').innerText = sentmsg;
+
+				}).catch((err) => {
+					console.log(err);
+				});
+
+		};
+
+		console.log('scripted loaded');
+	</script>
+</body>
+
+</html>
