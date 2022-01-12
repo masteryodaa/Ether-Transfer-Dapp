@@ -1,9 +1,9 @@
 ## open index.html with any live server. 
 eg: vscode live server
 
-## connect your wallet 
+## connect your kovan testnet wallet 
 
-## enter the address you want to transfer ether to
+## enter the kovan testnet address you want to transfer ether to
 
 ## wait for the confirmation
 
