@@ -9,3 +9,4 @@ eg: vscode live server
 
 ## congrats, you've successfully transferred your ether.
 
+will bootstrap it later.
